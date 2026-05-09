@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
+        <title>☘️오늘의 뿡세!</title>
+        
+    <style>
+        body {
+            background-color: rgb(239, 255, 240);
+            text-align: center;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        h1 {
+            color: black;
+            text-align: center;
+            font-family: 'Grandiflora One', cursive;
+        }
+
+        #envelope {
+            width: 250px;
+            height: 200px;
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        #envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 125px solid transparent;
+            border-right: 125px solid transparent;
+            border-top: 80px solid rgb(200, 230, 200);
+            position: absolute;
+            top: 0;
+            transition: 0.45s ease;
+        } 
+
+        #envelope p {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            word-wrap: keep-all;
+        }
+
+        #fortune {
+            font-size: 17px;
+            font-family: Gaegu, cursive;
+            opacity: 0;
+        }
+
+
+    </style>
+
+    <body>
+        <h1>☘️ 오늘의 뿡세!</h1>
+        <br>
+        <p>오늘의 뿡세는...</p>
+        <br><br>
+        <div id="envelope" onclick="getFortune()">
+            <div id="envelope-flap"></div>
+            <p id="fortune">💌</p>
+        </div>
+    </body>
+
+    <script>
+        var isOpen = false ;
+        function getFortune() {
+            if (isOpen) {
+                document.getElementById('fortune').style.transition='opacity 1s ease';
+                document.getElementById('envelope-flap').style.transform='translateY(0)';
+                document.getElementById('fortune').style.opacity='0';
+                isOpen=false;
+            }
+            else {
+                document.getElementById('envelope-flap').style.transform='translateY(-80px)';
+            
+            var fortunes = [
+                '오하아사가 몇 위든<br>1위의 행운으로 만들어주는<br>뿡세🍀',
+                '오늘은 예콩이에게<br>좋은 말을 하세요!😬<br>예콩이에게 좋은 말을 하면<br>복이 와용',
+                '쾌변을 할 수도?💩',
+                '예콩이가 당신을<br>생각하고 있더영😘',
+                '오늘 쇼핑을 하면<br>득템!?🛍️',
+                '물을 많이 마시세요💧',
+                '좋아하는 노래를<br>좋아하는 사람과<br>같이 들어요!🎧',
+                '산책을 가면 좋은 일이<br>생길지도?🚶‍♀️',
+                '오늘은 많이 먹어도 0칼로리!?🍚🍳🍔🍧'
+            ]
+            var randomIndex = Math.floor(Math.random() * fortunes.length);
+            document.getElementById('fortune').innerHTML=fortunes[randomIndex];
+            document.getElementById('fortune').style.transition='opacity 4s ease';
+            document.getElementById('fortune').style.opacity='1';
+            isOpen=true;
+            }
+        }
+    </script>
+</html>
