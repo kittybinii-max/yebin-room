@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>방명록</title>
+        <style>
+            body {
+                background-color: aliceblue;
+                text-align:center;
+                font-family: 'Nanum Gothic', sans-serif;
+            }
+
+            .form-box{
+                background-color: white;
+                width: 90%;
+                max-width: 300px;
+                margin: 20px auto;
+                padding: 30px;
+                border-radius: 20px;
+            }
+
+            input, textarea, button {
+                display: block;
+                width:90%;
+                margin: 10px auto;
+                padding: 10px;
+                border-radius: 10px;
+                border: 2px solid rgb(250, 214, 220);
+                box-sizing: border-box;
+            }
+
+            button {
+                background-color: rgb(250, 214, 220);
+                color: black;
+                border: none;
+                cursor: pointer;
+            }
+
+            .card {
+                background-image: url('IMG_6012.JPG');
+                background-size: cover;
+                width: 90%;
+                max-width: 300px;
+                margin: 10px auto;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>📝 방명록</h1>
+        <div class="form-box">
+            <input id="name" placeholder="이름!">
+            <textarea id="message" placeholder="📝"></textarea>
+            <br><br>
+            <input type="checkbox" id="secret"> 비밀글
+            <button onclick="addMessage()">남기기</button>
+        </div>
+
+        <div id="guestbook"></div>
+
+       <script>
+            function addMessage() {
+                var name = document.getElementById('name').value;
+                var message = document.getElementById('message').value;
+                var isSecret = document.getElementById('secret').checked;
+                var displayMessage = isSecret ? '🔐비밀글' : message;
+                
+                var card = document.createElement('div')
+                card.className = 'card' ;
+                card.setAttribute('data-message', message);
+                card.setAttribute('data-is-secret', isSecret);
+                card.innerHTML = '<b>' + name + '</b><p>' + displayMessage + '</p>' + (isSecret ? ' <button onclick="revealMessage(this)">🔐</button>' : '') + ' <button onclick="deleteMessage(this)">🗑️</button>';
+                
+                document.getElementById('guestbook').appendChild(card);
+                
+                var messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                var index = messages.length;
+                card.setAttribute('data-index', index);
+                messages.push({name: name, message: message, isSecret: isSecret});
+                localStorage.setItem('messages', JSON.stringify(messages));
+                
+                addDoc(collection(db,'messages'), {
+                    name: name,
+                    message: message,
+                    isSecret: isSecret
+                });
+                
+                alert ('작성 완료!') ;
+            }
+            function deleteMessage(button) {
+                var password = prompt('삭제 비밀번호');
+                if (password === '06131228') {
+                    var card = button.parentElement;
+                    var index = card.getAttribute('data-index');
+                    var messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                    messages.splice(index, 1);
+                    localStorage.setItem('messages', JSON.stringify(messages));
+                    card.remove();
+                } else {
+                    alert('틀렸뜸ㅋㅋ');
+                }
+            }
+
+            function revealMessage(button) {
+                var password = prompt('비밀글 비밀번호');
+                if (password === '06131228') {
+                    var card =button.parentElement;
+                    var realMessage = card.getAttribute('data-message');
+                    card.querySelector('p').innerHTML = realMessage;
+                    button.remove();
+                } else {
+                    alert('바봉ㅋㅋ');
+                }
+                }
+
+            window.onload = function() {
+                var messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                messages.forEach(function(m, index) {
+                    var card = document.createElement('div');
+                    card.className = 'card' ;
+
+                    card.setAttribute('data-message', m.message);
+                    card.setAttribute('data-index', index);
+                    var displayMessage = m.isSecret ? '🔐비밀글' : m.message;
+                    card.innerHTML = '<b>' + m.name + '</b><p>' + displayMessage + '</p>' + (m.isSecret ? '<button onclick="revealMessage(this)">🔐</button>' : '') + '<button onclick="deleteMessage(this)">🗑️</button>';
+                    document.getElementById('guestbook').appendChild(card);
+                });
+            }
+        </script>
+
+        <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+  
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBM9h7hTssY811fmFsM6stcgUy34u3AF6g",
+    authDomain: "yebin-room.firebaseapp.com",
+    projectId: "yebin-room",
+    storageBucket: "yebin-room.firebasestorage.app",
+    messagingSenderId: "103789604684",
+    appId: "1:103789604684:web:35c9e0299c1259e08d69e9",
+    measurementId: "G-YB04JJ5Q4G"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+    </body>
+</html>
